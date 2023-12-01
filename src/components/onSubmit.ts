@@ -24,6 +24,7 @@ export const onSubmit = (formState, setIsSubmitting) => async (values) => {
     }
     if (formState === 'strapi') {
         try {
+            console.log(process.env.REACT_APP_API_URL);
             setIsSubmitting(true);
             await axios.get(process.env.REACT_APP_API_URL as string, {
                 params: {
