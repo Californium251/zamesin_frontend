@@ -7,14 +7,14 @@ export const onSubmit = (formState, setIsSubmitting) => async (values) => {
     if (formState === 'airtable') {
         try {
             setIsSubmitting(true);
-            if (await checkIfUserExists(values.email)) {
+            if (await checkIfUserExists(values.email.toLowerCase())) {
                 toast.warn('Такой пользователь уже существует в Airtable. Так что можно переходить к тестированию API.');
                 setIsSubmitting(false);
                 return;
             }
             const base = new Airtable({ apiKey: process.env.REACT_APP_AIRTABLE_API_KEY }).base(process.env.REACT_APP_AIRTABLE_BASE_ID as string);
             const tableName = process.env.REACT_APP_TABLE_NAME || 'Table 1';
-            await base(tableName).create([{ fields: { Email: values.email } }]);
+            await base(tableName).create([{ fields: { Email: values.email.toLowerCase() } }]);
             toast.success('Пользователь добавлен в Airtable');
             setIsSubmitting(false);
         } catch (e) {
@@ -27,7 +27,7 @@ export const onSubmit = (formState, setIsSubmitting) => async (values) => {
             setIsSubmitting(true);
             const res = await axios.get(process.env.REACT_APP_API_URL as string, {
                 params: {
-                    email: values.email,
+                    email: values.email.toLowerCase(),
                 },
                 headers: {
                     "Content-Type": "application/json",
